@@ -101,7 +101,7 @@ pinned Zigbee SDK with it:
 ```yaml
 dependencies:
   zb_router:
-    git: https://github.com/<you>/esp32c6-zigbee.git   # or a local clone path
+    git: https://github.com/andrewsaad/esp32c6-zigbee.git   # or a local clone path
     path: components/zb_router
     version: "<tag or commit>"
   idf:
@@ -188,9 +188,10 @@ sh test/host/run.sh
   always listening, extends the mesh (the build needs `CONFIG_ZB_ZCZR=y`).
   A battery device must be a sleepy end device (`ESP_ZB_DEVICE_TYPE_ED`,
   `CONFIG_ZB_ZED=y`, keep-alive/sleep config), which zb_router does not cover.
-- **After a leave** (removed from ZHA, or a local reset) the device does not
-  rejoin by itself; it steers again on the next boot. Restart steering from
-  your signal hook if you want otherwise.
+- **After a leave:** a leave *with rejoin* (the coordinator asking the device
+  to rejoin) starts steering again right away. A plain leave (removed from ZHA,
+  or a local reset) does not rejoin by itself; it steers again on the next
+  boot. Restart steering from your signal hook if you want otherwise.
 - **ZCL strings are length-prefixed.** Basic-cluster identity strings start
   with a length byte (`"\x0a""OnOffLight"`); keep it accurate if you rename.
 - **XIAO antenna pins.** On the XIAO ESP32-C6 keep GPIO3/GPIO14 for the

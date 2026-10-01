@@ -195,15 +195,18 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
         }
         break;
     case ESP_ZB_ZDO_SIGNAL_LEAVE: {
-        /* Removed by the coordinator or a local reset. No automatic rejoin
-         * here: a factory-new device steers again on the next boot, or the
-         * app can restart steering from its signal hook. */
+        /* Removed by the coordinator or a local reset. A leave WITH rejoin
+         * (e.g. the coordinator moving us) steers again right away; a plain
+         * leave stays off the network until the next boot steers it back
+         * (or the app restarts steering from its signal hook). */
         const esp_zb_zdo_signal_leave_params_t *lp =
             (const esp_zb_zdo_signal_leave_params_t *)esp_zb_app_signal_get_params(p_sg_p);
+        bool rejoin = lp && lp->leave_type == ESP_ZB_NWK_LEAVE_TYPE_REJOIN;
         s_joined = false;
-        ESP_LOGW(TAG, "Left the network (%s)",
-                 (lp && lp->leave_type == ESP_ZB_NWK_LEAVE_TYPE_REJOIN) ? "rejoin requested"
-                                                                        : "reset");
+        ESP_LOGW(TAG, "Left the network (%s)", rejoin ? "rejoin requested, steering again" : "reset");
+        if (rejoin) {
+            retry_commissioning(ESP_ZB_BDB_MODE_NETWORK_STEERING);
+        }
         break;
     }
     default:
