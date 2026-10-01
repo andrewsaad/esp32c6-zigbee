@@ -1,0 +1,21 @@
+## IDF Component Manager Manifest File
+##
+## Pins the mature 1.6.x classic esp_zb_* API. esp-zigbee-lib 2.0.x on main is
+## a full API rewrite (ezb_* namespace) and is intentionally NOT used here. If
+## the component manager ever resolves 2.0.x, every esp_zb_* call in this
+## component (and in apps built on it) changes name wholesale - keep these pins.
+##
+## ESP-IDF >= 5.3.1 recommended for the ESP32-C6 802.15.4 radio.
+version: "0.1.0"
+description: "Generic Zigbee ROUTER boilerplate for ESP32-C6/H2 on esp-zigbee-lib 1.6.x"
+license: "MIT"
+targets:
+  - esp32c6
+  - esp32h2
+dependencies:
+  espressif/esp-zboss-lib: "~1.6.0"
+  espressif/esp-zigbee-lib:
+    version: "~1.6.0"
+    require: public
+  idf:
+    version: ">=5.3.1"

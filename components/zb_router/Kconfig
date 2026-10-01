@@ -1,0 +1,94 @@
+menu "Zigbee Router (zb_router)"
+
+    config ZB_ROUTER_CHANNEL
+        int "Zigbee channel (0 = scan all channels 11-26)"
+        range 0 26
+        default 0
+        help
+            The 802.15.4 channel network steering is allowed to use.
+
+            0 scans every Zigbee channel (11-26). Any value 11-26 pins steering
+            to that single channel; set it to your coordinator's channel (ZHA
+            shows it under the Zigbee network settings). Values 1-10 are not
+            Zigbee channels and fail the build.
+
+            Pinning the channel alone is NOT enough to avoid joining a
+            neighbor's network on the same channel; also set the extended PAN
+            ID below.
+
+    config ZB_ROUTER_EXT_PAN_ID
+        string "Extended PAN ID to join (16 hex chars, 0 = any network)"
+        default "0000000000000000"
+        help
+            The extended PAN ID (EPID) of the network this device may join,
+            as 16 hex characters, big-endian, i.e. in the same byte order ZHA
+            displays it. Colons are allowed and ignored, so
+            "0123456789abcdef" and "01:23:45:67:89:ab:cd:ef" are equivalent.
+
+            All zeros means "any network": steering associates with the first
+            network in range that permits joining, which may not be yours.
+            Setting your coordinator's EPID makes steering associate only with
+            that network. The EPID is public beacon data, not a secret.
+
+            A malformed value makes zb_router_start() fail with
+            ESP_ERR_INVALID_ARG rather than silently falling back to
+            "any network".
+
+    config ZB_ROUTER_MAX_CHILDREN
+        int "Maximum joined children"
+        range 1 64
+        default 10
+        help
+            Router capacity for child devices (end devices that pick this
+            router as parent). The esp-zigbee-sdk examples use 10.
+
+    config ZB_ROUTER_RETRY_DELAY_MS
+        int "Commissioning retry delay (ms)"
+        range 100 600000
+        default 1000
+        help
+            Delay before re-running a failed BDB initialization or network
+            steering attempt. Steering retries forever until a join succeeds.
+
+    config ZB_ROUTER_TASK_STACK_SIZE
+        int "Zigbee task stack size (bytes)"
+        range 3072 32768
+        default 4096
+        help
+            Stack of the task running the Zigbee stack main loop. The
+            endpoint-registration callback, the signal hook and the joined
+            callback all run on this task; raise it if they need more stack.
+
+    config ZB_ROUTER_TASK_PRIORITY
+        int "Zigbee task priority"
+        range 1 24
+        default 5
+
+    choice ZB_ROUTER_ANTENNA
+        prompt "RF antenna switch"
+        default ZB_ROUTER_ANTENNA_NONE
+        help
+            Some boards route the radio through an RF switch that must be
+            enabled (and an antenna selected) before the radio starts.
+
+            The Seeed XIAO ESP32-C6 has one: GPIO3 enables the RF switch
+            (driven LOW) and GPIO14 selects the antenna (LOW = built-in
+            ceramic, HIGH = external u.FL). Pick one of the XIAO options on
+            that board and keep GPIO3/GPIO14 free for antenna control.
+
+            Leave "None" on any other board: the XIAO options drive GPIO3 and
+            GPIO14 as outputs, which may clash with other hardware.
+
+        config ZB_ROUTER_ANTENNA_NONE
+            bool "None (no RF switch on this board)"
+
+        config ZB_ROUTER_ANTENNA_XIAO_ONBOARD
+            bool "XIAO ESP32-C6: built-in ceramic antenna"
+            depends on IDF_TARGET_ESP32C6
+
+        config ZB_ROUTER_ANTENNA_XIAO_EXTERNAL
+            bool "XIAO ESP32-C6: external u.FL antenna"
+            depends on IDF_TARGET_ESP32C6
+    endchoice
+
+endmenu
