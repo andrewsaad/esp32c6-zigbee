@@ -1,0 +1,17 @@
+# ESP-IDF build output and generated artifacts (repo root and examples/*)
+build/
+managed_components/
+sdkconfig
+sdkconfig.old
+dependencies.lock
+
+# Host unit test binaries
+test/host/test_zb_router_epid
+test/host/*.exe
+
+# Editor / IDE
+.vscode/
+*.swp
+
+# Python
+__pycache__/
