@@ -1,0 +1,19 @@
+menu "Example: On/Off Light"
+
+    config EXAMPLE_LIGHT_GPIO
+        int "Light GPIO"
+        range 0 30
+        default 15
+        help
+            GPIO driven by the OnOff attribute. The default, GPIO15, is the
+            user LED on a Seeed XIAO ESP32-C6. Avoid the strapping pins and,
+            with a XIAO antenna option selected, GPIO3/GPIO14.
+
+    config EXAMPLE_LIGHT_ACTIVE_LOW
+        bool "Light is active-low"
+        default y
+        help
+            Set when the output turns the light on by driving LOW (true for
+            the XIAO ESP32-C6 user LED). Clear for an active-high LED/driver.
+
+endmenu

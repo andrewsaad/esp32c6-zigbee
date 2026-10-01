@@ -1,0 +1,10 @@
+## IDF Component Manager Manifest File
+##
+## Pulls the zb_router component from this repo by relative path; it brings
+## the pinned esp-zigbee-lib / esp-zboss-lib ~1.6.0 with it. From another
+## project, use the git form instead (see the repo README).
+dependencies:
+  zb_router:
+    path: ../../../components/zb_router
+  idf:
+    version: ">=5.3.1"

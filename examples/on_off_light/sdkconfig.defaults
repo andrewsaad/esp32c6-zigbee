@@ -1,0 +1,52 @@
+#
+# Target: set with `idf.py set-target esp32c6` (writes CONFIG_IDF_TARGET).
+# Values below mirror the esp-zigbee-sdk HA examples, switched to ROUTER role.
+#
+
+#
+# Partition Table
+#
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_OFFSET=0x8000
+CONFIG_PARTITION_TABLE_MD5=y
+# end of Partition Table
+
+#
+# mbedTLS (Zigbee security primitives)
+#
+CONFIG_MBEDTLS_HARDWARE_AES=n
+CONFIG_MBEDTLS_HARDWARE_MPI=n
+CONFIG_MBEDTLS_HARDWARE_SHA=n
+CONFIG_MBEDTLS_CMAC_C=y
+CONFIG_MBEDTLS_SSL_PROTO_DTLS=y
+CONFIG_MBEDTLS_KEY_EXCHANGE_ECJPAKE=y
+CONFIG_MBEDTLS_ECJPAKE_C=y
+# end of mbedTLS
+
+#
+# Zboss - Zigbee enabled as ZCZR (Coordinator/Router). zb_router runs it as
+# a ROUTER (role chosen at runtime). An end-device build would need ZB_ZED.
+#
+CONFIG_ZB_ENABLED=y
+CONFIG_ZB_ZCZR=y
+# end of Zboss
+
+#
+# 802.15.4 native radio on the ESP32-C6.
+#
+CONFIG_ZB_RADIO_NATIVE=y
+
+#
+# zb_router: Seeed XIAO ESP32-C6 RF switch, built-in ceramic antenna.
+# On any other board change this to CONFIG_ZB_ROUTER_ANTENNA_NONE=y.
+#
+CONFIG_ZB_ROUTER_ANTENNA_XIAO_ONBOARD=y
+
+#
+# zb_router network selection. Strongly recommended: set both to your
+# coordinator's values (see the repo README), e.g.
+#   CONFIG_ZB_ROUTER_CHANNEL=15
+#   CONFIG_ZB_ROUTER_EXT_PAN_ID="01:23:45:67:89:ab:cd:ef"
+#
